@@ -5,7 +5,7 @@ WhyLogs v0.0.2 available under Apache License 2.0
 
 ### Overview
 
-WhyLogs helps data sciense and ML teams to enable logging & monitoring in AI/ML applications. Whether you are running an experimentation or production pipeline, understanding the properties of data that flows through the application is critical for the success of the ML project. WhyLogs is an open source package that calculates approximate statistics for datasets of any size (from small to TB-size) in order to identify changes in data quality for model inputs and outputs.
+WhyLogs helps data science and ML teams to enable logging & monitoring in AI/ML applications. Whether you are running an experimentation or production pipeline, understanding the properties of data that flows through the application is critical for the success of the ML project. WhyLogs is an open source package that calculates approximate statistics for datasets of any size (from small to TB-size) in order to identify changes in data quality for model inputs and outputs.
 
 Approximate statistics allows the package to be deployed with minimal infrastructure requirements, and to work with an entire dataset as opposed to calculating actual statistics on a small sample of data which may miss outliers and other anomalies. These qualities make WhyLogs an excellent solution for logging the data properties of production pipelines that operate even on GB-scale data and with enterprise SLAs.  
 
