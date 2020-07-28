@@ -1,13 +1,13 @@
-# WhyLogs CLI Demo - A Library for Statistical Profile Logging
+# WhyLogs CLI Demo - A Library for Logging the Statistical Properties of Data 
 
 Source code included for DataSketches and WhyLogs.  
 WhyLogs v0.0.2 available under Apache License 2.0
 
 ### Overview
 
-WhyLogs is an open source package that calculates approximate statistics for very large datasets in order to identify changes in data quality for model inputs and outputs at inference time.  
+WhyLogs helps data sciense and ML teams to enable logging & monitoring in AI/ML applications. Whether you are running an experimentation or production pipeline, understanding the properties of data that flows through the application is critical for the success of the ML project. WhyLogs is an open source package that calculates approximate statistics for datasets of any size (from small to TB-size) in order to identify changes in data quality for model inputs and outputs.
 
-Approximate statistics allows the package to be deployed with minimal infrastructure requirements, and to work with an entire dataset as opposed to calculating actual statistics on a small sample of data which may miss outliers and other anomalies.  
+Approximate statistics allows the package to be deployed with minimal infrastructure requirements, and to work with an entire dataset as opposed to calculating actual statistics on a small sample of data which may miss outliers and other anomalies. These qualities make WhyLogs an excellent solution for logging the data properties of production pipelines that operate even on GB-scale data and with enterprise SLAs.  
 
 For Linux/Windows subsystem or Mac OS X users, WhyLogs v0.0.2 can be installed from our precompiled binary. Alternatively, you can install from source. Installation instructions for both methods are included below.
 
@@ -62,7 +62,7 @@ Required environment:
 1. Run `pip install -U whylogs`.
    You might have to run `pip3 install -U whylogs` for MacOS X.
 2. To start WhyLogs, run: `whylogs init`. Follow the instructions.
-3. The CLI comes with a sample dataset of 1000 entries from the Loanding Club dataset above.
+3. The CLI comes with a sample dataset of 1000 entries from the [Lending Club loan data](https://www.kaggle.com/wordsforthewise/lending-club) dataset, described above.
 4. Start Jupyter to view the notebooks.
 
 For other ways of installing, please see [Installation Instructions](INSTALLATION.md).
