@@ -1,70 +1,181 @@
-# WhyLogs CLI Demo - A Library for Statistical Profile Logging
+# WhyLogs Python
 
-Source code included for DataSketches and WhyLogs.  
-WhyLogs v0.0.2 available under Apache License 2.0
+Python port of the [WhyLogs Java library](https://gitlab.com/whylabs/whylogs-java)
 
-### Overview
+## Installation
+Currently, `python 3.7` is recommended.
 
-WhyLogs is an open source package that calculates approximate statistics for very large datasets in order to identify changes in data quality for model inputs and outputs at inference time.  
+### 1. Login to private pypi
 
-Approximate statistics allows the package to be deployed with minimal infrastructure requirements, and to work with an entire dataset as opposed to calculating actual statistics on a small sample of data which may miss outliers and other anomalies.  
+#### 1a. Install aws cli
+```pip install --upgrade awscli```
 
-For Linux/Windows subsystem or Mac OS X users, WhyLogs v0.0.2 can be installed from our precompiled binary. Alternatively, you can install from source. Installation instructions for both methods are included below.
+#### 1b. Login to private PYPI
+You'll need access to the private PYPI repo.
+Scripts for logging into the private pypi are available at the [why-shell repo](https://gitlab.com/whylabs/why-shell)
 
-An example project is included in the packages as follows:
 
-    ├── baseline_dataset.csv
-    ├── output
-    │   └── test-project
-    │       └── 1595376294660
-    │           ├── protobuf.bin
-    │           ├── summmary_histogram.json
-    │           ├── summmary_strings.json
-    │           ├── summmary_summary.csv
-    │           └── whylogs.json
-    └── whylogs.yml
+### 2. Install whylogs
 
-### Concepts
+#### From private PYPI
+```pip install whylogs-python```
 
-**Project:** A collection of related data sets that are used for multiple models or applications.
+#### OR install from the whylogs repo (required for dev)
+This installation also requires access to the private PYPI
 
-**Pipeline:** A series of one or multiple datasets to build a single model or application. A project might contain multiple pipelines.
+1. Clone the repo and cd into the directory
+2. Build the protobuf files
+```./gradlew build-python```
+3. cd into `whylogs-python` and install with pip.
 
-**Dataset:** A collection of records. WhyLogs v0.0.2 supports structured datasets; meaning that the data can be represented as a table where each row is a different record, and each column is a feature of the record. 
+For a dev installation with development requirements, it's recommended create a fresh conda environment or virtualenv
 
-**Feature:** In the context of WhyLogs v0.0.2 and structured data, a feature is a column in a dataset. A feature can be discrete (think of gender or eye color) or continuous (think of age or salary). 
+ ```
+# Development installation
+pip install -v -e ".[dev]"
+ ```
 
-**WhyLogs Output:** A profile summary file is returned by WhyLogs on a given dataset in JSON format. For convenience, files for this content are provided in flat table, histogram, and frequency format.
+ Dev install with local package
+ ```
+ # Development installation
+ pip install -v -e ".[dev]"
+ pip install -v -e /path/to/whylogs-python/
+ ```
 
-**Statistical Profile:** A collection of statistical properties of a given feature. Properties can be different for discrete and continuous features. 
+Standard installation:
 
-### WhyLogs JSON
+ ```
+ # Standard installation
+ pip install .
+ ```
+ 
+ ## Release process
+ * If you are doing development locally, use the following command to create a local dev version. 
+ 
+ Some basic guideline for choosing whether it's `patch|minor|major`:
+ * Patch is for small bug fixes
+ * Minor is for new features
+ * Major is for breaking changes / API
+ 
+The flow looks like this:
+```
+ check out master -> create branch -> make changes -> bump dev -> publish dev
+ -> bump beta -> create merge request ->  merge in to master 
+ -> check out master -> bump release -> merge request to release -> merge into release
+```
 
-For each baseline or batch dataset provided, WhyLogs returns a profile summary in JSON format. It includes `metadata` about the system and profiling process as well as a `columns` record containing information for each feature profiled.
+### Local development
+Start with a `dev` version locally (and you can publish them as well if needed).
 
-### Example notebooks
+```
+cd whylogs-python/
+bump2version dev --verbose --dry-run [--allow-dirty]
+bump2version dev --verbose
+```
+Then from the root of the repo
+```
+./gradlew publish-python
+```
 
-Two example Juypter notebooks are included with WhyLogs. One notebook (Analysis.ipynb) is focused on the content of the profile summaries while the other (Logging.ipynb) is focused on library calls into WhyLogs Python. A generated version of these notebooks are created during `whylogs init` that contain project metadata for a more simple and customized initial experience.
+You can keep bumping the local version if you need to (you can't republish a version twice so this is needed).
 
-### Project example data
+### Pushing to master branch
 
-The dataset used in the project example is [Lending Club loan data](https://www.kaggle.com/wordsforthewise/lending-club) from Kaggle. These files contain complete loan data for all loans issued through the years 2007-2015, including the current (as of dataset release in late 2018) loan status (Current, Late, Fully Paid, etc.) and latest payment information.
+* If you are planning to push to `master` branch, please first create a dev version (see the above guide). 
+**You'll have to bump it to a `beta` version or the build will fail**. You'll need to do this before creating the merge request:
+```
+bump2version beta --verbose --dry-run
+bump2version beta --verbose
+```
 
-The file containing loan data through the "present" contains complete loan data for all loans issued through the previous completed calendar quarter. The data set consists of 152 features. 
+### Updating notebooks
+Before committing any changes to the example notebooks, you should clear all cell outputs.
+We don't want to version control the notebook cell outputs.
 
-### Dependencies
-Required environment:
-- Linux x86-64/Windows subsystem OR Mac OS X
-- Python 3.7 or later
 
-## Getting Started
+### Full release
 
-1. Make sure you have Python 3.7 or 3.8 (`python --version`)
-2. Run `pip install -U whylogs`.
-   You might have to run `pip3 install -U whylogs` for MacOS X.
-3. To start WhyLogs, run: `whylogs init`. Follow the instructions.
-4. The CLI comes with a sample dataset of 1000 entries from the Loanding Club dataset above.
-5. Start Jupyter to view the notebooks.
+For full release, you'll have to bump it to a release version and push to `release` branch. This branch
+will contain only 'nice-looking' version string (i.e. `1.0.1`). Doing otherwise will fail the build when merging into `release` branch.
+```
+bump2version release --verbose --dry-run
+bump2version release --verbose
+```
 
-For other ways of installing, please see [Installation Instructions](INSTALLATION.md)
+## Tests
+Testing is handled with the `pytest` framework.
+You can run all the tests by running `pytest -vvs tests/` from the parent directory.
 
+## Examples
+See the `scripts/` directory for some example scripts for interacting with `whylogs-python`
+
+See the `notebooks/` directory for some example notebooks.
+
+
+# Development/contribution
+## Doc string format
+We use the [numpydocs docstring standard](https://numpydoc.readthedocs.io/en/latest/format.html), which is human-readable and works with [sphinx](https://www.sphinx-doc.org/en/master/) api documentation generator.
+
+# Data
+
+## Example column and daset summaries
+Check the `example-data/` folder for some example summary files.
+
+### Flat dataset summary mapping
+The following dictionary details the mapping from the nested `DatasetSummary` attributes to the flat table names:
+```python
+from whylabs.logs.core.datasetprofile import SCALAR_NAME_MAPPING
+import json
+print(json.dumps(SCALAR_NAME_MAPPING, indent=2))
+
+
+{
+  "counters": {
+    "count": "count",
+    "null_count": {
+      "value": "null_count"
+    },
+    "true_count": {
+      "value": "bool_count"
+    }
+  },
+  "number_summary": {
+    "count": "numeric_count",
+    "max": "max",
+    "mean": "mean",
+    "min": "min",
+    "stddev": "stddev",
+    "unique_count": {
+      "estimate": "nunique_numbers",
+      "lower": "nunique_numbers_lower",
+      "upper": "nunique_numbers_upper"
+    }
+  },
+  "schema": {
+    "inferred_type": {
+      "type": "inferred_dtype",
+      "ratio": "dtype_fraction"
+    },
+    "type_counts": {
+      "UNKNOWN": "type_unknown_count",
+      "NULL": "type_null_count",
+      "FRACTIONAL": "type_fractional_count",
+      "INTEGRAL": "type_integral_count",
+      "BOOLEAN": "type_boolean_count",
+      "STRING": "type_string_count"
+    }
+  },
+  "string_summary": {
+    "unique_count": {
+      "estimate": "nunique_str",
+      "lower": "nunique_str_lower",
+      "upper": "ununique_str_upper"
+    }
+  }
+}
+```
+
+#### Counts
+* count: total number of records for that column.  
+  Note that if dictionary records are being parsed (e.g. `{'col_a': val_a, 'col_b': val_b}`) any missing fields will not be counted at all.   They won't contribute to null counts at all.  This behavior may change in the future.
+* if you want type counts, I'd stick with the `type_*` fields.  Again, nulls only get counted if an actually null value is passed for a given record.
